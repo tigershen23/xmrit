@@ -5,6 +5,7 @@ import OfflineExporting from "highcharts/modules/offline-exporting";
 import Annotation from "highcharts/modules/annotations";
 import dayjs from "dayjs";
 import lz77 from "./lz77";
+import * as echarts from "echarts";
 
 // initialize Highcharts
 Exporting(Highcharts);
@@ -2081,6 +2082,7 @@ async function decodeShareLink(
 
 function renderCharts() {
   createPlots("xplot", "mrplot");
+  renderECharts();
 }
 
 const xplotTitle = () =>
@@ -2123,4 +2125,50 @@ function isShadowDividerLine(dl: { id: string }): boolean {
 function maxPadding(): number {
   let n = Math.min(state.xdata.length, 50) / 50;
   return 0.2 - n * n * 0.1;
+}
+
+function renderECharts() {
+  // Find the container where the Highcharts are rendered
+  let chartsContainer = document.querySelector("#charts-container > div");
+
+  // Create a new div for ECharts
+  const echartsContainer = document.createElement("div");
+  echartsContainer.id = "echarts";
+  echartsContainer.style.width = "100%";
+  echartsContainer.style.height = "400px";
+  echartsContainer.style.marginTop = "20px";
+
+  // Insert the new div after the charts container
+  chartsContainer.parentNode.insertBefore(
+    echartsContainer,
+    chartsContainer.nextSibling
+  );
+
+  // Initialize ECharts instance
+  const chart = echarts.init(document.getElementById("echarts"));
+
+  // Specify chart configuration item and data
+  const option = {
+    title: {
+      text: "ECharts",
+    },
+    tooltip: {},
+    xAxis: {
+      type: "category",
+      data: state.xdata.map((d) => d.x),
+    },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Value",
+        type: "line",
+        data: state.xdata.map((d) => d.value),
+      },
+    ],
+  };
+
+  // Use configuration item and data specified to show chart
+  chart.setOption(option);
 }
