@@ -2135,7 +2135,7 @@ function renderECharts() {
   const echartsContainer = document.createElement("div");
   echartsContainer.id = "echarts";
   echartsContainer.style.width = "100%";
-  echartsContainer.style.height = "400px";
+  echartsContainer.style.display = "flex";
   echartsContainer.style.marginTop = "20px";
 
   // Insert the new div after the charts container
@@ -2144,31 +2144,235 @@ function renderECharts() {
     chartsContainer.nextSibling
   );
 
-  // Initialize ECharts instance
-  const chart = echarts.init(document.getElementById("echarts"));
+  // Create two separate divs for X Plot and MR Plot
+  const xPlotContainer = document.createElement("div");
+  xPlotContainer.id = "echarts-xplot";
+  xPlotContainer.style.width = "50%";
+  xPlotContainer.style.height = "400px";
+  xPlotContainer.style.border = "1px solid #ccc";
+  xPlotContainer.style.borderRadius = "4px";
+  xPlotContainer.style.marginRight = "10px";
 
-  // Specify chart configuration item and data
-  const option = {
-    title: {
-      text: "ECharts",
+  const mrPlotContainer = document.createElement("div");
+  mrPlotContainer.id = "echarts-mrplot";
+  mrPlotContainer.style.width = "50%";
+  mrPlotContainer.style.height = "400px";
+  mrPlotContainer.style.border = "1px solid #ccc";
+  mrPlotContainer.style.borderRadius = "4px";
+
+  echartsContainer.appendChild(xPlotContainer);
+  echartsContainer.appendChild(mrPlotContainer);
+
+  // Initialize ECharts instances
+  const xPlotChart = echarts.init(document.getElementById("echarts-xplot"));
+  const mrPlotChart = echarts.init(document.getElementById("echarts-mrplot"));
+
+  // Calculate moving ranges
+  const movingRanges = getMovements(state.xdata);
+
+  // Calculate limits
+  const stats = wrangleData();
+  const xLimits = stats.lineValues[0];
+  const mrLimits = stats.lineValues[0];
+
+  // Calculate y-axis ranges
+  const xMin = Math.min(stats.xchartMin, ...state.xdata.map((d) => d.value));
+  const xMax = Math.max(stats.xchartMax, ...state.xdata.map((d) => d.value));
+  const mrMax = Math.max(stats.mrchartMax, ...movingRanges.map((d) => d.value));
+
+  // Common options for both charts
+  const commonOptions = {
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "cross",
+      },
     },
-    tooltip: {},
+    grid: {
+      top: "15%",
+      bottom: "10%",
+      left: "10%",
+      right: "10%",
+    },
     xAxis: {
       type: "category",
-      data: state.xdata.map((d) => d.x),
+      axisLabel: {
+        formatter: (value) => {
+          const date = new Date(value);
+          return `${date.getDate()} ${date.toLocaleString("default", {
+            month: "short",
+          })}`;
+        },
+      },
     },
     yAxis: {
       type: "value",
+      nameLocation: "middle",
+      nameGap: 50,
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: "dashed",
+        },
+      },
+    },
+  };
+
+  // X Plot options
+  const xPlotOption = {
+    ...commonOptions,
+    title: {
+      text: "X Plot",
+      left: "center",
+      top: "3%",
+    },
+    xAxis: {
+      ...commonOptions.xAxis,
+      data: state.xdata.map((d) => d.x),
+    },
+    yAxis: {
+      ...commonOptions.yAxis,
+      name: state.yLabel,
+      min: xMin - (xMax - xMin) * 0.1,
+      max: xMax + (xMax - xMin) * 0.1,
     },
     series: [
       {
-        name: "Value",
+        name: "X Plot",
         type: "line",
-        data: state.xdata.map((d) => d.value),
+        data: state.xdata.map((d) => ({
+          value: d.value,
+          itemStyle: {
+            color: "black",
+          },
+        })),
+        symbol: "circle",
+        symbolSize: 8,
+        label: {
+          show: true,
+          position: "top",
+          formatter: "{c}",
+          fontSize: 12,
+          fontWeight: "bold",
+          color: "black",
+        },
+      },
+      {
+        name: "Average X",
+        type: "line",
+        data: state.xdata.map(() => xLimits.avgX),
+        lineStyle: { type: "dashed", color: "red" },
+        symbol: "none",
+        label: {
+          show: true,
+          position: "end",
+          formatter: (params) => `Avg X: ${params.value.toFixed(2)}`,
+          fontSize: 12,
+          fontWeight: "bold",
+        },
+      },
+      {
+        name: "UNPL",
+        type: "line",
+        data: state.xdata.map(() => xLimits.UNPL),
+        lineStyle: { type: "dashed", color: "steelblue" },
+        symbol: "none",
+        label: {
+          show: true,
+          position: "end",
+          formatter: (params) => `UNPL: ${params.value.toFixed(2)}`,
+          fontSize: 12,
+          fontWeight: "bold",
+        },
+      },
+      {
+        name: "LNPL",
+        type: "line",
+        data: state.xdata.map(() => xLimits.LNPL),
+        lineStyle: { type: "dashed", color: "steelblue" },
+        symbol: "none",
+        label: {
+          show: true,
+          position: "end",
+          formatter: (params) => `LNPL: ${params.value.toFixed(2)}`,
+          fontSize: 12,
+          fontWeight: "bold",
+        },
       },
     ],
   };
 
-  // Use configuration item and data specified to show chart
-  chart.setOption(option);
+  // MR Plot options
+  const mrPlotOption = {
+    ...commonOptions,
+    title: {
+      text: "MR Plot",
+      left: "center",
+      top: "3%",
+    },
+    xAxis: {
+      ...commonOptions.xAxis,
+      data: movingRanges.map((d) => d.x),
+    },
+    yAxis: {
+      ...commonOptions.yAxis,
+      name: "Moving Range",
+      min: 0,
+      max: mrMax * 1.1,
+    },
+    series: [
+      {
+        name: "MR Plot",
+        type: "line",
+        data: movingRanges.map((d) => ({
+          value: d.value,
+          itemStyle: {
+            color: "black",
+          },
+        })),
+        symbol: "circle",
+        symbolSize: 8,
+        label: {
+          show: true,
+          position: "top",
+          formatter: "{c}",
+          fontSize: 12,
+          fontWeight: "bold",
+          color: "black",
+        },
+      },
+      {
+        name: "Average Movement",
+        type: "line",
+        data: movingRanges.map(() => mrLimits.avgMovement),
+        lineStyle: { type: "dashed", color: "red" },
+        symbol: "none",
+        label: {
+          show: true,
+          position: "end",
+          formatter: (params) => `Avg Movement: ${params.value.toFixed(2)}`,
+          fontSize: 12,
+          fontWeight: "bold",
+        },
+      },
+      {
+        name: "URL",
+        type: "line",
+        data: movingRanges.map(() => mrLimits.URL),
+        lineStyle: { type: "dashed", color: "steelblue" },
+        symbol: "none",
+        label: {
+          show: true,
+          position: "end",
+          formatter: (params) => `URL: ${params.value.toFixed(2)}`,
+          fontSize: 12,
+          fontWeight: "bold",
+        },
+      },
+    ],
+  };
+
+  // Set options and render charts
+  xPlotChart.setOption(xPlotOption);
+  mrPlotChart.setOption(mrPlotOption);
 }
