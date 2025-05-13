@@ -1,0 +1,11 @@
+{
+  "snapshot": "snapshot-20250513-7ac69154-7b80-40d0-aa44-fac1fd920692",
+  "install": "npm install && npm install chroma-js && npx update-browserslist-db@latest",
+  "start": "npm run build",
+  "terminals": [
+    {
+      "name": "Webserver",
+      "command": "npm run start"
+    }
+  ]
+}
