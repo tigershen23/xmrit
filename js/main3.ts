@@ -41,26 +41,26 @@ enum DataStatus {
 function dataStatusColor(d: DataStatus): string {
   switch (d) {
     case DataStatus.RUN_OF_EIGHT_EXCEPTION:
-      return "blue";
+      return "#4361EE"; // rich blue
     case DataStatus.FOUR_NEAR_LIMIT_EXCEPTION:
-      return "orange";
+      return "#FF9F1C"; // bright orange
     case DataStatus.NPL_EXCEPTION:
-      return "red";
+      return "#E63946"; // vibrant red
     default:
-      return "black";
+      return "#2A9D8F"; // teal color for normal points
   }
 }
 
 function dataLabelsStatusColor(d: DataStatus): string {
   switch (d) {
     case DataStatus.RUN_OF_EIGHT_EXCEPTION:
-      return "blue";
+      return "#4361EE"; // rich blue
     case DataStatus.FOUR_NEAR_LIMIT_EXCEPTION:
-      return "#be5504"; // ginger. contrast: 4.68
+      return "#FF7F00"; // darker orange for better contrast
     case DataStatus.NPL_EXCEPTION:
-      return "#e3242b"; // rose. contrast 4.61
+      return "#E63946"; // vibrant red 
     default:
-      return "black";
+      return "#212529"; // dark gray for normal labels
   }
 }
 
@@ -138,7 +138,7 @@ const MEDIAN_URL_SCALING = 3.865;
 const PADDING_FROM_EXTREMES = 0.1;
 const DECIMAL_POINT = 2;
 const LIMIT_LINE_WIDTH = 2;
-const DIVIDER_LINE_WIDTH = 4;
+const DIVIDER_LINE_WIDTH = 2; // Thinner line for better appearance
 const INACTIVE_LOCKED_LIMITS = {
   avgX: 0,
   LNPL: Infinity,
@@ -146,8 +146,8 @@ const INACTIVE_LOCKED_LIMITS = {
   avgMovement: 0,
   URL: -Infinity,
 } as LineValueType;
-const MEAN_SHAPE_COLOR = "red";
-const LIMIT_SHAPE_COLOR = "steelblue";
+const MEAN_SHAPE_COLOR = "#E63946"; // vibrant red instead of plain red
+const LIMIT_SHAPE_COLOR = "#457B9D"; // rich blue instead of steelblue
 const INITIAL_VALUES = [
   5045, 4350, 4350, 3975, 4290, 4430, 4485, 4285, 3980, 3925, 3645, 3760, 3300,
   3685, 3463, 5200,
@@ -860,11 +860,41 @@ function renderDividerLine(dividerLine: DividerType, stats: _Stats) {
         z: 99, // ensure the divider renders above all other lines
         style: {
           lineWidth: DIVIDER_LINE_WIDTH,
-          lineDash: "solid",
-          stroke: "purple",
+          lineDash: [6, 3], // Creates a dashed line
+          stroke: "#6C757D", // More subtle color
+          opacity: 0.9,
+          shadowBlur: 3,
+          shadowColor: 'rgba(0, 0, 0, 0.2)',
+          shadowOffsetX: 1,
+          lineCap: 'round',
+          lineJoin: 'round'
         },
         draggable: "horizontal",
+        ondrag: (dragEvent) => {
+          // Subtle visual feedback during drag
+          dragEvent.target.style = {
+            ...dragEvent.target.style,
+            lineWidth: DIVIDER_LINE_WIDTH + 1,
+            opacity: 1,
+            stroke: "#343A40", // Darker color during drag
+            shadowBlur: 8,
+            shadowColor: 'rgba(0, 0, 0, 0.3)'
+          };
+        },
         ondragend: (dragEvent) => {
+          // Reset style
+          dragEvent.target.style = {
+            lineWidth: DIVIDER_LINE_WIDTH,
+            lineDash: [6, 3],
+            stroke: "#6C757D",
+            opacity: 0.9,
+            shadowBlur: 3,
+            shadowColor: 'rgba(0, 0, 0, 0.2)',
+            shadowOffsetX: 1,
+            lineCap: 'round',
+            lineJoin: 'round'
+          };
+          
           for (let d of state.dividerLines) {
             if (d.id == dragEvent.target.id) {
               const translatedPt = xplot.convertFromPixel("grid", [
@@ -936,14 +966,25 @@ function renderLimitLines(stats: _Stats) {
           textStyle: {
             fontWeight: "bold",
           },
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderColor: '#ced4da',
+          borderWidth: 1,
         },
         label: {
           formatter: showLabel && `${round(statisticY)}`,
-          fontSize: 11,
-          color: "#000",
+          fontSize: 12,
+          color: "#212529",
+          backgroundColor: 'rgba(255,255,255,0.8)',
+          padding: [4, 8],
+          borderRadius: 2,
+          fontWeight: 'bold',
         },
         emphasis: {
-          disabled: true,
+          disabled: false,
+          lineStyle: {
+            width: lineStyle.width + 1,
+            opacity: 1
+          }
         },
         data: [
           [
@@ -971,6 +1012,8 @@ function renderLimitLines(stats: _Stats) {
           color: MEAN_SHAPE_COLOR,
           width: strokeWidth,
           type: lineType,
+          shadowBlur: 2,
+          shadowColor: 'rgba(0, 0, 0, 0.2)'
         },
         statisticY: lv.avgMovement ?? 0,
         showLabel: isLastSegment,
@@ -981,6 +1024,8 @@ function renderLimitLines(stats: _Stats) {
           color: LIMIT_SHAPE_COLOR,
           width: strokeWidth,
           type: lineType,
+          shadowBlur: 2,
+          shadowColor: 'rgba(0, 0, 0, 0.2)'
         },
         statisticY: lv.URL ?? 0,
         showLabel: isLastSegment,
@@ -1001,10 +1046,14 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-low-Q`,
         lineStyle: {
-          color: "gray",
+          color: "#ADB5BD", // Lighter gray
           type: "dashed",
-          dashOffset: 15,
-          width: 1,
+          dashOffset: 10,
+          width: 1.5,
+          opacity: 0.8,
+          cap: "round",
+          shadowBlur: 1,
+          shadowColor: 'rgba(0, 0, 0, 0.1)'
         },
         statisticY: lv.lowerQuartile ?? 0,
       }),
@@ -1012,10 +1061,14 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-upp-Q`,
         lineStyle: {
-          color: "gray",
+          color: "#ADB5BD", // Lighter gray
           type: "dashed",
-          dashOffset: 15,
-          width: 1,
+          dashOffset: 10,
+          width: 1.5,
+          opacity: 0.8,
+          cap: "round",
+          shadowBlur: 1,
+          shadowColor: 'rgba(0, 0, 0, 0.1)'
         },
         statisticY: lv.upperQuartile ?? 0,
       }),
@@ -1025,6 +1078,8 @@ function renderLimitLines(stats: _Stats) {
           color: MEAN_SHAPE_COLOR,
           width: strokeWidth,
           type: lineType,
+          shadowBlur: 2,
+          shadowColor: 'rgba(0, 0, 0, 0.2)'
         },
         statisticY: lv.avgX ?? 0,
         showLabel: isLastSegment,
@@ -1035,6 +1090,8 @@ function renderLimitLines(stats: _Stats) {
           color: LIMIT_SHAPE_COLOR,
           width: strokeWidth,
           type: lineType,
+          shadowBlur: 2,
+          shadowColor: 'rgba(0, 0, 0, 0.2)'
         },
         statisticY: lv.UNPL ?? 0,
         showLabel: isLastSegment,
@@ -1045,6 +1102,8 @@ function renderLimitLines(stats: _Stats) {
           color: LIMIT_SHAPE_COLOR,
           width: strokeWidth,
           type: lineType,
+          shadowBlur: 2,
+          shadowColor: 'rgba(0, 0, 0, 0.2)'
         },
         statisticY: lv.LNPL ?? 0,
         showLabel: isLastSegment,
@@ -3128,49 +3187,114 @@ const backgroundImage = new Image();
 backgroundImage.src = "../xmrit-bg.png";
 
 const chartBaseOptions = {
-  backgroundColor: "rgba(255, 255, 255, 0.5)",
+  backgroundColor: {
+    type: 'radial',
+    x: 0.5,
+    y: 0.5,
+    r: 0.8,
+    colorStops: [
+      {
+        offset: 0,
+        color: 'rgba(248, 249, 250, 0.9)' // almost white with slight transparency
+      },
+      {
+        offset: 1,
+        color: 'rgba(233, 236, 239, 0.8)' // light gray with transparency
+      }
+    ]
+  },
+  grid: {
+    left: '5%',
+    right: '5%',
+    top: '8%',
+    bottom: '8%',
+    containLabel: true
+  },
   xAxis: {
     type: "time",
     axisLabel: {
       formatter: ECHARTS_DATE_FORMAT,
       hideOverlap: true,
-      color: "#000",
+      color: "#212529",
+      fontWeight: 'normal',
+      fontSize: 12
     },
     axisLine: {
       lineStyle: {
-        color: "#000",
+        color: "#495057",
+        width: 1.5
       },
       onZero: false,
     },
+    splitLine: {
+      show: true,
+      lineStyle: {
+        color: 'rgba(222, 226, 230, 0.8)',
+        width: 1,
+        type: 'dashed'
+      }
+    },
     position: "bottom",
     nameLocation: "center",
-    nameGap: 25,
+    nameGap: 30,
+    nameTextStyle: {
+      color: "#212529",
+      fontSize: 13,
+      fontWeight: 'bold'
+    }
   },
   yAxis: {
     splitLine: {
-      show: false,
+      show: true,
+      lineStyle: {
+        color: 'rgba(222, 226, 230, 0.8)',
+        width: 1,
+        type: 'dashed'
+      }
     },
     axisLabel: {
-      fontSize: 11,
-      color: "#000",
+      fontSize: 12,
+      color: "#212529",
       hideOverlap: true,
       formatter: defaultValueFormatter,
       padding: [0, 10, 0, 0],
     },
+    axisLine: {
+      lineStyle: {
+        color: "#495057",
+        width: 1.5
+      }
+    },
     splitNumber: 6,
     nameLocation: "middle",
     nameRotate: 90,
-    nameGap: 45,
+    nameGap: 50,
     nameTextStyle: {
-      color: "#000",
+      color: "#212529",
+      fontSize: 13,
+      fontWeight: 'bold'
     },
   },
   title: {
     left: "center",
     triggerEvent: true,
+    textStyle: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#212529'
+    },
+    top: 10
   },
   tooltip: {
     show: true,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderColor: '#ced4da',
+    borderWidth: 1,
+    textStyle: {
+      color: '#212529'
+    },
+    padding: [8, 12],
+    extraCssText: 'box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);'
   },
 };
 
@@ -3180,17 +3304,24 @@ const mapDataValueToChartDataPoint =
       value: [fromDateStr(dv.x), dv.value],
       itemStyle: {
         color: dataStatusColor(dv.status),
+        borderColor: '#fff',
+        borderWidth: 1,
+        shadowBlur: 2,
+        shadowColor: 'rgba(0, 0, 0, 0.2)'
       },
       label: {
         show: showLabel,
         color: dataLabelsStatusColor(dv.status),
         fontWeight: "bold",
+        fontSize: 11,
         formatter: (params) => {
           return defaultValueFormatter(params.data.value[1]);
         },
+        position: 'top',
+        distance: 4
       },
       tooltip: {
-        formatter: `${dayjs(dv.x).format("ddd, D MMM YYYY")}:<br/> ${dv.value}`,
+        formatter: `${dayjs(dv.x).format("ddd, D MMM YYYY")}:<br/> <b>${defaultValueFormatter(dv.value)}</b>`,
       },
     });
 
@@ -3199,9 +3330,19 @@ const mapDataValuesToChartSeries = (subD, i) => ({
   z: 100,
   type: "line",
   symbol: "circle",
-  symbolSize: 7,
+  symbolSize: 8,
+  emphasis: {
+    scale: true,
+    itemStyle: {
+      shadowBlur: 10,
+      shadowColor: 'rgba(0, 0, 0, 0.3)'
+    }
+  },
   lineStyle: {
-    color: "#000",
+    color: "#495057",
+    width: 2,
+    shadowBlur: 2,
+    shadowColor: 'rgba(0, 0, 0, 0.1)'
   },
   labelLayout: {
     hideOverlap: true,
@@ -3227,8 +3368,10 @@ const createTrendValueSeries = ({
   symbolSize: 0,
   lineStyle: {
     color,
-    width: lineType === "solid" ? 3 : 1,
+    width: lineType === "solid" ? 3 : 1.5,
     type: lineType,
+    shadowBlur: lineType === "solid" ? 3 : 0,
+    shadowColor: 'rgba(0, 0, 0, 0.1)'
   },
   labelLayout: {
     hideOverlap: true,
