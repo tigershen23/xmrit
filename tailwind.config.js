@@ -1,13 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./css/**/*.css", "./js/**/*.{js,ts}", "./*.html"],
+  content: ['./**/*.{html,js,ts}'],
   theme: {
     extend: {
       // Add inter var font
       fontFamily: {
-        sans: ["Inter var", "sans-serif"],
+        sans: ['Inter var', 'sans-serif'],
       },
+      transitionProperty: {
+        'height': 'height',
+        'spacing': 'margin, padding',
+      }
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],
+  plugins: [],
 };

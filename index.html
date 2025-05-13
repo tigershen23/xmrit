@@ -51,12 +51,13 @@
 </head>
 
 <body class='max-w-screen-2xl mx-auto'>
-  <header class="col-span-12 pt-3 px-4 border-b pb-5 mb-5 border-slate-400" x-data="{ isOpen: false }">
+  <header class="col-span-12 pt-3 px-4 border-b pb-5 mb-5 border-slate-200 shadow-sm" x-data="{ isOpen: false }">
     <div class="flex items-stretch md:items-center justify-between">
-      <a class='flex items-center' href="/"><img class="w-16 h-16 mr-1" src="https://xmrit.com/xmrit-logo.png" />
+      <a class='flex items-center group' href="/">
+        <img class="w-16 h-16 mr-1 transition-transform group-hover:scale-105" src="https://xmrit.com/xmrit-logo.png" />
         <div class="flex flex-col justify-start">
-          <h1 class="text-2xl md:text-4xl font-sans font-bold tracking-tight text-gray-700">Xmrit</h1>
-          <h3 class="text-xs md:text-sm font-sans -mt-1 italic">by Commoncog</h3>
+          <h1 class="text-2xl md:text-4xl font-sans font-bold tracking-tight text-gray-700 group-hover:text-blue-700 transition-colors">Xmrit</h1>
+          <h3 class="text-xs md:text-sm font-sans -mt-1 italic text-gray-500">by Commoncog</h3>
         </div>
       </a>
       <button type="button"
@@ -70,14 +71,11 @@
         </svg>
       </button>
       <nav class="mt-5 md:mt-0 hidden lg:block text-sm md:text-base">
-
-
-        <a class="hidden lg:inline px-2 md:px-4 py-3 hover:text-blue-700" href="https://xmrit.com/opensource/">Open
+        <a class="hidden lg:inline px-2 md:px-4 py-3 hover:text-blue-700 transition-colors" href="https://xmrit.com/opensource/">Open
           Source</a>
-        <a class="px-2 md:px-4 py-3 hover:text-blue-700" href="https://xmrit.com/manual/">User Manual</a>
-        <a class="px-2 md:px-4 py-3 text-white bg-slate-800 hover:bg-blue-700 rounded-lg"
+        <a class="px-2 md:px-4 py-3 hover:text-blue-700 transition-colors" href="https://xmrit.com/manual/">User Manual</a>
+        <a class="px-2 md:px-4 py-3 text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition-colors"
           href="https://xmrit.com/about/">What is This?</a>
-
       </nav>
 
       <div x-cloak x-show="isOpen" x-transition:enter="duration-150 ease-out"
@@ -134,7 +132,7 @@
 
       <div
         class="col-span-12 order-2 md:order-none flex flex-row items-end md:items-start md:col-span-4 lg:col-span-3 xl:col-span-2 px-2 md:mb-0">
-        <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal" id="refresh-charts"
+        <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal shadow-sm transition-colors" id="refresh-charts"
           type="button">Refresh Charts</button>
       </div>
       <div class="col-span-12 order-3 md:order-none md:col-span-6 xl:col-span-7 px-2" id="charts-global-buttons">
@@ -146,34 +144,33 @@
             type="file" id="csv-file" accept=".csv">
         </div>
 
+        <div class="flex flex-wrap gap-2 my-2">
+          <button class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg font-normal disabled:opacity-75 shadow-sm transition-colors"
+            id="lock-limit-btn" type="button">Lock Limits</button>
+          <button class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg font-normal disabled:opacity-75 shadow-sm transition-colors"
+            id="trend-open-btn" type="button">Trends</button>
+          <button class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg font-normal disabled:opacity-75 shadow-sm transition-colors"
+            id="de-seasonalise-btn" type="button">Seasonality</button>
+        </div>
 
-        <button class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg font-normal disabled:opacity-75"
-          id="lock-limit-btn" type="button">Lock Limits</button>
-        <button class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg font-normal disabled:opacity-75"
-          id="trend-open-btn" type="button">Trends</button>
-        <button class="px-4 py-2 text-white bg-slate-700 hover:bg-slate-600 rounded-lg font-normal disabled:opacity-75"
-          id="de-seasonalise-btn" type="button">Seasonality</button>
-
-        <button class="text-red-500 hover:bg-red-100
- px-2 py-1 rounded hidden trend-remove-btn">Remove trend lines</button>
-        <button class="text-red-500 hover:bg-red-100
- px-2 py-1 rounded hidden deseason-remove-btn">Remove de-seasonalisation</button>
-        <button class="text-red-500 hover:bg-red-100 py-1 px-2 rounded hidden lock-limit-remove">Remove Locked
-          Limits</button>
+        <div class="flex flex-wrap gap-2 mt-2">
+          <button class="text-red-500 hover:bg-red-50 px-3 py-1 rounded hidden trend-remove-btn border border-red-200 transition-colors">Remove trend lines</button>
+          <button class="text-red-500 hover:bg-red-50 px-3 py-1 rounded hidden deseason-remove-btn border border-red-200 transition-colors">Remove de-seasonalisation</button>
+          <button class="text-red-500 hover:bg-red-50 px-3 py-1 rounded hidden lock-limit-remove border border-red-200 transition-colors">Remove Locked Limits</button>
+        </div>
 
         <div id="deseason-backdrop" class="modal-backdrop"></div>
         <div id="deseason-dialog" class="modal p-6 overflow-y-auto bg-white rounded-xl shadow-xl max-w-prose">
           <div class="flex flex-col gap-y-2">
 
-            <header class="pb-2 flex flex-row gap-x-2 items-center">
-              <span class="flex-1 text-lg font-bold">Seasonality</span>
+            <header class="pb-2 flex flex-row gap-x-2 items-center border-b border-gray-100 mb-3">
+              <span class="flex-1 text-lg font-bold text-blue-800">Seasonality</span>
               <div class="flex flex-row items-center justify-end gap-x-2">
-                <button class="text-red-500 hover:bg-red-100
-     px-2 py-1 rounded hidden deseason-remove-btn">Remove de-seasonalisation</button>
-                <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal"
+                <button class="text-red-500 hover:bg-red-50 px-3 py-1 rounded hidden deseason-remove-btn border border-red-200 transition-colors">Remove de-seasonalisation</button>
+                <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal shadow-sm transition-colors"
                   id="deseason-add" type="button">Deseasonalise</button>
               </div>
-              <button class="text-gray-500 pr-2 w-8" id="deseason-close">
+              <button class="text-gray-500 hover:text-gray-700 pr-2 w-8 transition-colors" id="deseason-close">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -181,26 +178,26 @@
               </button>
             </header>
 
-            <p>Use this to remove recurring patterns or fluctuations in data at regular intervals (e.g., monthly or
+            <p class="text-gray-700">Use this to remove recurring patterns or fluctuations in data at regular intervals (e.g., monthly or
               yearly) to
               reveal
               underlying trends or residual variations.</p>
 
-            <p>Modify your seasonal data or set the seasonal factors directly below. In
+            <p class="text-gray-700">Modify your seasonal data or set the seasonal factors directly below. In
               case of conflict, the latter wins.</p>
 
-            <p class="text-red-600 bg-red-100 p-2 rounded hidden" id="deseason-warn-1">De-seasonalising with less than
+            <p class="text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 hidden" id="deseason-warn-1">De-seasonalising with less than
               one <span class="selected-period">year</span> of data will lead to all data points being the same value.
             </p>
-            <p class="text-red-600 bg-red-100 p-2 rounded hidden" id="deseason-warn-2">De-seasonalising with only 1 full
+            <p class="text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 hidden" id="deseason-warn-2">De-seasonalising with only 1 full
               <span class="selected-period">year</span> of data will lead to some of the data points being the same
               value.</p>
-            <p class="text-red-600 bg-red-100 p-2 rounded hidden" id="deseason-warn-3">Grouping when you don't have the
+            <p class="text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 hidden" id="deseason-warn-3">Grouping when you don't have the
               same number of periods will make some sub-periods artificially higher.</p>
 
-            <div class="flex flex-col">
-              <label for="period" class="block text-sm font-medium leading-6 text-gray-900">Period:</label>
-              <select name="period" id="period-select">
+            <div class="flex flex-col mt-2">
+              <label for="period" class="block text-sm font-medium leading-6 text-gray-700">Period:</label>
+              <select name="period" id="period-select" class="mt-1 block w-full rounded-md border border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm">
                 <option id="period-option-year" value="year">Annual</option>
                 <option id="period-option-quarter" value="quarter">Quarter</option>
                 <option id="period-option-month" value="month">Month</option>
@@ -208,110 +205,104 @@
               </select>
             </div>
 
-
-            <div class="flex flex-row gap-x-3">
-
-
+            <div class="flex flex-row gap-x-3 mt-3">
               <div class="flex-1 grow">
                 <div class="flex flex-row items-center">
-                  <span class="flex-1 block text-sm font-medium leading-6 text-gray-900">Seasonal Data:
+                  <span class="flex-1 block text-sm font-medium leading-6 text-gray-700">Seasonal Data:
                   </span>
-                  <button class="p-1 text-blue-700 hover:bg-blue-100 rounded-md text-sm" id="deseason-reset-data"
+                  <button class="p-1 text-blue-700 hover:bg-blue-50 rounded-md text-sm transition-colors" id="deseason-reset-data"
                     type="button">Replace from table</button>
                 </div>
-                <div id="deseason-dataTable"></div>
+                <div id="deseason-dataTable" class="mt-2 border border-gray-200 rounded-lg overflow-hidden"></div>
               </div>
-
 
               <div class="flex-1">
                 <div class="flex flex-row items-center pl-1">
-                  <span class="flex-1 block text-sm font-medium leading-6 text-gray-900">Seasons:
+                  <span class="flex-1 block text-sm font-medium leading-6 text-gray-700">Seasons:
                   </span>
-                  <button class="p-1 text-blue-700 hover:bg-blue-100 rounded-md text-sm" id="deseason-reset-factors"
+                  <button class="p-1 text-blue-700 hover:bg-blue-50 rounded-md text-sm transition-colors" id="deseason-reset-factors"
                     type="button">Recalculate seasonal factors</button>
                 </div>
-                <div id="seasonal-factors-dataTable"></div>
+                <div id="seasonal-factors-dataTable" class="mt-2 border border-gray-200 rounded-lg overflow-hidden"></div>
               </div>
-
             </div>
           </div>
         </div>
         <div id="lock-limit-backdrop" class="modal-backdrop"></div>
         <div id="lock-limit-dialog" class="modal p-6 overflow-y-auto bg-white rounded-xl shadow-xl max-w-prose">
-          <header class="pb-2 flex flex-row gap-x-2 items-center">
-            <span class="flex-1 text-lg font-bold">Lock Limits</span>
+          <header class="pb-2 flex flex-row gap-x-2 items-center border-b border-gray-100 mb-3">
+            <span class="flex-1 text-lg font-bold text-blue-800">Lock Limits</span>
             <div class="flex flex-row items-center justify-end gap-x-2">
-              <button class="text-red-500 hover:bg-red-100 py-1 px-2 rounded hidden lock-limit-remove">Remove Locked
+              <button class="text-red-500 hover:bg-red-50 px-3 py-1 rounded hidden lock-limit-remove border border-red-200 transition-colors">Remove Locked
                 Limits</button>
-              <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal"
+              <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal shadow-sm transition-colors"
                 id="lock-limit-add" type="button">Lock Limits</button>
             </div>
-            <button class="text-gray-500 pr-2 w-8" id="lock-limit-close">
+            <button class="text-gray-500 hover:text-gray-700 pr-2 w-8 transition-colors" id="lock-limit-close">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="size-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
               </svg>
             </button>
           </header>
-          <p> Modify your routine variation data in the table or set the limit lines directly below. In case of
+          <p class="text-gray-700"> Modify your routine variation data in the table or set the limit lines directly below. In case of
             conflict, the
             latter wins. </p>
-          <p class="font-semibold text-red-600 hidden" id="lock-limit-warning">Since locked lines is currently active,
+          <p class="font-semibold text-red-600 bg-red-50 p-3 rounded-lg border border-red-100 hidden" id="lock-limit-warning">Since locked lines is currently active,
             limit
             lines in the inputs might differ from the table data calculation</p>
-          <div class="flex flex-wrap gap-2">
+          <div class="flex flex-wrap gap-3 my-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div>
-              <label class="block text-sm font-medium leading-6 text-gray-900">Avg X</label>
+              <label class="block text-sm font-medium leading-6 text-gray-700">Avg X</label>
               <input type="number"
-                class="lock-limit-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="lock-limit-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 data-limit="avgX" placeholder="Enter the limit">
             </div>
             <div>
-              <label class="block text-sm font-medium leading-6 text-gray-900">Upper X Limit (UNPL)</label>
+              <label class="block text-sm font-medium leading-6 text-gray-700">Upper X Limit (UNPL)</label>
               <input type="number"
-                class="lock-limit-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="lock-limit-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 data-limit="UNPL" placeholder="Enter the limit">
             </div>
             <div>
-              <label class="block text-sm font-medium leading-6 text-gray-900">Lower X Limit (LNPL)</label>
+              <label class="block text-sm font-medium leading-6 text-gray-700">Lower X Limit (LNPL)</label>
               <input type="number"
-                class="lock-limit-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="lock-limit-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 data-limit="LNPL" placeholder="Enter the limit">
             </div>
             <div>
-              <label class="block text-sm font-medium leading-6 text-gray-900">Avg Movement</label>
+              <label class="block text-sm font-medium leading-6 text-gray-700">Avg Movement</label>
               <input type="number"
-                class="lock-limit-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="lock-limit-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 data-limit="avgMovement" placeholder="Enter the limit">
             </div>
             <div>
-              <label class="block text-sm font-medium leading-6 text-gray-900">Upper Movement Limit (URL)</label>
+              <label class="block text-sm font-medium leading-6 text-gray-700">Upper Movement Limit (URL)</label>
               <input type="number"
-                class="lock-limit-input block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                class="lock-limit-input mt-1 block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 data-limit="URL" placeholder="Enter the limit">
             </div>
           </div>
-          <div class="flex flex-row items-center">
-            <span class="flex-1 block text-sm font-medium leading-6 text-gray-900">Locked Limits Basis Data:
+          <div class="flex flex-row items-center mt-3">
+            <span class="flex-1 block text-sm font-medium leading-6 text-gray-700">Locked Limits Basis Data:
             </span>
-            <button class="p-1 text-blue-700 hover:bg-blue-100 rounded-md text-sm" id="lock-limit-reset-data"
+            <button class="p-1 text-blue-700 hover:bg-blue-50 rounded-md text-sm transition-colors" id="lock-limit-reset-data"
               type="button">Reset data (from table)</button>
           </div>
-          <div id="lock-limit-dataTable"></div>
+          <div id="lock-limit-dataTable" class="mt-2 border border-gray-200 rounded-lg overflow-hidden"></div>
         </div>
         <div id="trend-backdrop" class="modal-backdrop"></div>
         <div id="trend-dialog" class="modal p-6 overflow-y-auto bg-white rounded-xl shadow-xl max-w-prose">
           <div class="flex flex-col gap-y-2">
 
-            <header class="pb-2 flex flex-row gap-x-2 items-center">
-              <span class="flex-1 text-lg font-bold">Trends</span>
+            <header class="pb-2 flex flex-row gap-x-2 items-center border-b border-gray-100 mb-3">
+              <span class="flex-1 text-lg font-bold text-blue-800">Trends</span>
               <div class="flex flex-row items-center justify-end gap-x-2">
-                <button class="text-red-500 hover:bg-red-100
-     px-2 py-1 rounded hidden trend-remove-btn">Remove trended limits</button>
-                <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal"
+                <button class="text-red-500 hover:bg-red-50 px-3 py-1 rounded hidden trend-remove-btn border border-red-200 transition-colors">Remove trended limits</button>
+                <button class="px-4 py-2 text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal shadow-sm transition-colors"
                   id="trend-apply-btn" type="button">Trend Limits</button>
               </div>
-              <button class="text-gray-500 pr-2 w-8" id="trend-close-btn">
+              <button class="text-gray-500 hover:text-gray-700 pr-2 w-8 transition-colors" id="trend-close-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="size-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -319,39 +310,38 @@
               </button>
             </header>
 
-            <p>Use this to generate trended limit lines from a line of best fit.</p>
-            <p> Modify data in the linear regression table, or
+            <p class="text-gray-700">Use this to generate trended limit lines from a line of best fit.</p>
+            <p class="text-gray-700"> Modify data in the linear regression table, or
               set the gradient
               and intercept in the equation directly below. In case of conflict, the latter wins.</p>
 
-            <div class="p-2 bg-gray-50 border border-gray-200 rounded-md">
-              <span class="flex-1 block text-sm font-medium leading-6 text-gray-900">Average line equation:
+            <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg my-3">
+              <span class="block text-sm font-medium leading-6 text-gray-700 mb-2">Average line equation:
               </span>
               <div class="flex flex-row items-center gap-2 text-lg">
-                <span>
+                <span class="text-gray-800">
                   y =
                 </span>
                 <input type="number" id="trend-slope-input"
-                  class="block rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 font-bold"
+                  class="block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-medium"
                   placeholder="Enter the Slope" />
-                <span>
+                <span class="text-gray-800">
                   x +
                 </span>
                 <input type="number" id="trend-intercept-input"
-                  class="block rounded-md border-0  text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 font-bold"
+                  class="block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm font-medium"
                   data-intercept="intercept" placeholder="Enter the Intercept" />
               </div>
             </div>
 
-
-            <div class="flex flex-row items-center">
-              <span class="flex-1 block text-sm font-medium leading-6 text-gray-900">Linear Regression Data:
+            <div class="flex flex-row items-center mt-3">
+              <span class="flex-1 block text-sm font-medium leading-6 text-gray-700">Linear Regression Data:
               </span>
-              <button class="p-1 text-blue-700 hover:bg-blue-100 rounded-md text-sm" id="trend-reset-data"
+              <button class="p-1 text-blue-700 hover:bg-blue-50 rounded-md text-sm transition-colors" id="trend-reset-data"
                 type="button">
                 Reset data (from table)</button>
             </div>
-            <div id="trend-dataTable"></div>
+            <div id="trend-dataTable" class="mt-2 border border-gray-200 rounded-lg overflow-hidden"></div>
 
           </div>
         </div>
@@ -384,38 +374,37 @@
       <div class="col-span-12 order-1 md:order-none px-2">
         <div id="file-error" class="text-red-500 font-bold hidden"></div>
         <div class="bg-red-50 border border-red-300 md:hidden rounded-lg p-3 mb-3">
-          <p>XmRit! isn’t built for mobile use. Some functionality is degraded. For the full experience, load this on a
+          <p>XmRit! isn't built for mobile use. Some functionality is degraded. For the full experience, load this on a
             tablet
             or computer.</p>
         </div>
       </div>
       <div class="col-span-12 order-5 md:order-none md:col-span-4 lg:col-span-3 xl:col-span-2 px-2">
-        <p class="text-sm lg:text-xs">
-          Edit your data below. Right click for more options.
-          <span class="text-red-600 text-sm lg:text-xs hidden" id="data-table-error">Dates should be in YYYY-MM-DD
-            format (if
-            copying from Excel, change date format settings!). </span>
-          <span class="font-semibold text-sm lg:text-xs hidden" id="duplicate-data-warning">Duplicate data detected in
-            the
-            table, results might be inaccurate.
-        </p>
-        </p>
-        <div id="dataTable" class='lg:mt-2'></div>
+        <div class="bg-gray-50 p-2 rounded-lg border border-gray-200 mb-2">
+          <p class="text-sm lg:text-xs font-medium text-gray-700">
+            Edit your data below. Right click for more options.
+            <span class="text-red-600 text-sm lg:text-xs hidden" id="data-table-error">Dates should be in YYYY-MM-DD
+              format (if copying from Excel, change date format settings!). </span>
+            <span class="font-semibold text-sm lg:text-xs hidden" id="duplicate-data-warning">Duplicate data detected in
+              the table, results might be inaccurate.
+          </p>
+        </div>
+        <div id="dataTable" class='lg:mt-2 border border-gray-200 rounded-lg overflow-hidden shadow-sm'></div>
       </div>
       <div class="col-span-12 order-6 md:order-none md:col-span-8 lg:col-span-9 xl:col-span-10 px-2"
         id="charts-container">
-        <div class="flex flex-wrap lg:flex-nowrap gap-2 overflow-scroll">
+        <div class="flex flex-wrap lg:flex-nowrap gap-4 overflow-scroll">
           <div id="xplot-div"
-            class="my-2 w-full lg:w-1/2 mx-auto flex flex-col justify-center items-center rounded-md box-border border border-gray-300">
+            class="my-2 w-full lg:w-1/2 mx-auto flex flex-col justify-center items-center rounded-md box-border border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
             <div id="xplot" class="w-full pt-2 pl-2" style="height:400px; width: 100%"></div>
-            <div class='flex flex-row w-full justify-center border-t-2 border-gray-100'>
+            <div class='flex flex-row w-full justify-center border-t border-gray-100 bg-gray-50 py-1'>
               <button
-                class="px-1 md:px-3 py-2 my-2 md:my-3 mr-2 text-sm md:text-md text-white bg-blue-900 hover:bg-blue-800 rounded-lg font-normal"
+                class="px-1 md:px-3 py-2 my-2 md:my-3 mr-2 text-sm md:text-md text-white bg-blue-700 hover:bg-blue-600 rounded-lg font-normal shadow-sm transition-colors"
                 id="add-divider" type="button">Add Divider</button>
-              <button class="px-1 md:px-3 py-2 text-sm md:text-md text-blue-800 text-slate-400 font-normal"
+              <button class="px-1 md:px-3 py-2 my-2 md:my-3 text-sm md:text-md text-slate-500 hover:text-blue-700 font-normal transition-colors"
                 id="remove-divider" type="button">Remove Divider</button>
               <button
-                class="flex items-center my-2 md:my-3 px-3 py-2 text-sm md:text-md text-blue-800 rounded-lg font-normal"
+                class="flex items-center my-2 md:my-3 px-3 py-2 text-sm md:text-md text-blue-700 hover:text-blue-600 rounded-lg font-normal transition-colors"
                 id="export-xplot" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="inline w-5 h-5 -mt-1">
@@ -427,11 +416,11 @@
             </div>
           </div>
           <div id="mrplot-div"
-            class="my-2 w-full lg:w-1/2 mx-auto flex flex-col justify-center items-center rounded-md box-border border border-gray-300">
+            class="my-2 w-full lg:w-1/2 mx-auto flex flex-col justify-center items-center rounded-md box-border border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
             <div id="mrplot" class="w-full pt-2 pl-2" style="height:400px; width: 100%"></div>
-            <div class="flex flex-row w-full justify-center border-t-2 border-gray-100">
+            <div class="flex flex-row w-full justify-center border-t border-gray-100 bg-gray-50 py-1">
               <button
-                class="flex items-center my-2 md:my-3 px-3 py-2 text-sm md:text-md text-blue-800 rounded-lg font-normal"
+                class="flex items-center my-2 md:my-3 px-3 py-2 text-sm md:text-md text-blue-700 hover:text-blue-600 rounded-lg font-normal transition-colors"
                 id="export-mrplot" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="inline w-5 h-5 -mt-1">
@@ -445,49 +434,48 @@
         </div>
       </div>
       <div class="col-span-12 order-last mt-16 px-2 pb-10">
-        <div class="border-blue-300 border bg-sky-50 rounded-lg px-2 py-4 grid grid-cols-4 grid-flow-row">
+        <div class="border-blue-300 border bg-gradient-to-r from-sky-50 to-blue-50 rounded-lg px-2 py-4 grid grid-cols-4 grid-flow-row shadow-sm">
           <div class="col-span-4 md:col-span-2 prose p-2">
-            <h2 class='text-lg font-semibold' id="instructions">Quick Instructions</h2>
-            <ol>
+            <h2 class='text-lg font-semibold text-blue-800' id="instructions">Quick Instructions</h2>
+            <ol class="text-gray-700">
               <li>Paste and/or edit some data into the table.</li>
               <li>Create a link to share charts with others, or download the charts as images.</li>
               <li><em>Optional:</em> Add and adjust <strong>dividers</strong>, or edit <strong>table headers</strong> to
                 update chart axis labels.</li>
-              <li>The full user manual is <a href="https://xmrit.com/manual/">available here</a>.</li>
+              <li>The full user manual is <a href="https://xmrit.com/manual/" class="text-blue-700 hover:text-blue-500 underline">available here</a>.</li>
             </ol>
           </div>
           <div class="col-span-4 md:col-span-2 prose p-2">
-            <h2 class='text-lg font-semibold'>Privacy Notice</h2>
-            <p>XmRit is 100% browser based and obsessed about protecting your privacy. Your data is never sent to our
-              servers. <a href="https://xmrit.com/privacy/">Read the full privacy policy</a> for details on analytics
+            <h2 class='text-lg font-semibold text-blue-800'>Privacy Notice</h2>
+            <p class="text-gray-700">XmRit is 100% browser based and obsessed about protecting your privacy. Your data is never sent to our
+              servers. <a href="https://xmrit.com/privacy/" class="text-blue-700 hover:text-blue-500 underline">Read the full privacy policy</a> for details on analytics
               tracking.</p>
-            <h2 class='text-lg font-semibold'>Have feedback?</h2>
-            <p>Send us feedback <a href="https://forms.gle/93hdRwdjJYDxnvSx5" target="_blank">here</a>. We'd love to
-              hear from
-              you!</p>
+            <h2 class='text-lg font-semibold text-blue-800'>Have feedback?</h2>
+            <p class="text-gray-700">Send us feedback <a href="https://forms.gle/93hdRwdjJYDxnvSx5" target="_blank" class="text-blue-700 hover:text-blue-500 underline">here</a>. We'd love to
+              hear from you!</p>
           </div>
         </div>
       </div>
 
     </section>
   </main>
-  <footer class="col-span-12 pt-8 px-4 border-t pb-5 mb-5 border-slate-400">
+  <footer class="col-span-12 pt-8 px-4 border-t pb-5 mb-5 border-slate-200 bg-gray-50">
     <div class="flex flex-col md:flex-row items-start justify-between">
-      <p class="text-gray-500 order-last md:order-first"><a class="hover:text-gray-800"
-          href="https://xmrit.com/">Xmrit</a> by <a class="hover:text-purple-600"
-          href="https://commoncog.com">Commoncog</a> &copy; 2025 // <br /> <a class="hover:text-gray-800"
+      <p class="text-gray-500 order-last md:order-first"><a class="hover:text-blue-700 transition-colors"
+          href="https://xmrit.com/">Xmrit</a> by <a class="hover:text-purple-600 transition-colors"
+          href="https://commoncog.com">Commoncog</a> &copy; 2025 // <br /> <a class="hover:text-gray-800 transition-colors"
           href="https://postcognito.com">Postcognito Pte Ltd</a></p>
       <nav class="mb-5 md:mb-0 flex flex-col md:flex-row">
-        <a class="text-gray-500 hover:text-gray-800 mx-0 md:mx-3 my-1 md:my-0"
+        <a class="text-gray-500 hover:text-blue-700 mx-0 md:mx-3 my-1 md:my-0 transition-colors"
           href="https://xmrit.com/articles/">Articles</a>
-        <a class="text-gray-500 hover:text-gray-800 mx-0 md:mx-3 my-1 md:my-0" href="https://xmrit.com/opensource/">Open
+        <a class="text-gray-500 hover:text-blue-700 mx-0 md:mx-3 my-1 md:my-0 transition-colors" href="https://xmrit.com/opensource/">Open
           Source</a>
-        <a class="text-gray-500 hover:text-gray-800 mx-0 md:mx-3 my-1 md:my-0"
+        <a class="text-gray-500 hover:text-blue-700 mx-0 md:mx-3 my-1 md:my-0 transition-colors"
           href="https://xmrit.com/integration/">Integration</a>
-        <a class="text-gray-500 hover:text-gray-800 mx-0 md:mx-3 my-1 md:my-0"
+        <a class="text-gray-500 hover:text-blue-700 mx-0 md:mx-3 my-1 md:my-0 transition-colors"
           href="https://forms.gle/93hdRwdjJYDxnvSx5">Send Feedback</a>
-        <a class="text-gray-500 hover:text-gray-800 my-1 md:my-0" href="https://xmrit.com/privacy/">Privacy Policy</a>
-        <a class="text-gray-500 hover:text-gray-800 mx-0 md:mx-3 my-1 md:my-0 underline decoration-indigo-500 underline-offset-4"
+        <a class="text-gray-500 hover:text-blue-700 my-1 md:my-0 transition-colors" href="https://xmrit.com/privacy/">Privacy Policy</a>
+        <a class="text-gray-700 font-medium mx-0 md:mx-3 my-1 md:my-0 underline decoration-indigo-500 underline-offset-4 hover:text-blue-700 transition-colors"
           href="https://shop.xmrit.com/metrics-masterclass">Metrics Masterclass</a>
       </nav>
     </div>
