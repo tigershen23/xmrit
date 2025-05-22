@@ -400,6 +400,77 @@
             table, results might be inaccurate.
         </p>
         </p>
+        <div id="color-customization-container" class="mt-4 p-4 border rounded">
+            <h3 class="text-lg font-semibold mb-2">Customize Chart Colors</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div>
+                    <label for="color-meanLine" class="block text-sm font-medium text-gray-700">Mean Line:</label>
+                    <input type="color" id="color-meanLine" data-color-key="meanLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-limitLine" class="block text-sm font-medium text-gray-700">Limit Lines:</label>
+                    <input type="color" id="color-limitLine" data-color-key="limitLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-dividerLine" class="block text-sm font-medium text-gray-700">Divider Lines:</label>
+                    <input type="color" id="color-dividerLine" data-color-key="dividerLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-quartileLine" class="block text-sm font-medium text-gray-700">Quartile Lines:</label>
+                    <input type="color" id="color-quartileLine" data-color-key="quartileLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-runOfEightException" class="block text-sm font-medium text-gray-700">Run of 8 Exception:</label>
+                    <input type="color" id="color-runOfEightException" data-color-key="runOfEightException" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-fourNearLimitException" class="block text-sm font-medium text-gray-700">4 Near Limit Exception:</label>
+                    <input type="color" id="color-fourNearLimitException" data-color-key="fourNearLimitException" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-nplException" class="block text-sm font-medium text-gray-700">NPL Exception:</label>
+                    <input type="color" id="color-nplException" data-color-key="nplException" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-dataPoint" class="block text-sm font-medium text-gray-700">Data Points/Lines:</label>
+                    <input type="color" id="color-dataPoint" data-color-key="dataPoint" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <!-- Add more color pickers here for other properties in ChartColors interface -->
+                <div>
+                    <label for="color-dataLabelRunOfEightException" class="block text-sm font-medium text-gray-700">Label: Run of 8:</label>
+                    <input type="color" id="color-dataLabelRunOfEightException" data-color-key="dataLabelRunOfEightException" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-dataLabelFourNearLimitException" class="block text-sm font-medium text-gray-700">Label: 4 Near Limit:</label>
+                    <input type="color" id="color-dataLabelFourNearLimitException" data-color-key="dataLabelFourNearLimitException" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-dataLabelNplException" class="block text-sm font-medium text-gray-700">Label: NPL Exception:</label>
+                    <input type="color" id="color-dataLabelNplException" data-color-key="dataLabelNplException" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-dataLabelDefault" class="block text-sm font-medium text-gray-700">Label: Default:</label>
+                    <input type="color" id="color-dataLabelDefault" data-color-key="dataLabelDefault" class="mt-1 p-1 border rounded w-full">
+                </div>
+                 <div>
+                    <label for="color-trendCenterLine" class="block text-sm font-medium text-gray-700">Trend Center Line:</label>
+                    <input type="color" id="color-trendCenterLine" data-color-key="trendCenterLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-trendLimitLine" class="block text-sm font-medium text-gray-700">Trend Limit Lines:</label>
+                    <input type="color" id="color-trendLimitLine" data-color-key="trendLimitLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-trendQuartileLine" class="block text-sm font-medium text-gray-700">Trend Quartile Lines:</label>
+                    <input type="color" id="color-trendQuartileLine" data-color-key="trendQuartileLine" class="mt-1 p-1 border rounded w-full">
+                </div>
+                <div>
+                    <label for="color-seasonalFactorTableHighlight" class="block text-sm font-medium text-gray-700">Seasonal Table Highlight:</label>
+                    <input type="color" id="color-seasonalFactorTableHighlight" data-color-key="seasonalFactorTableHighlight" class="mt-1 p-1 border rounded w-full">
+                </div>
+            </div>
+            <button id="reset-colors-btn" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Reset to Default Colors</button>
+        </div>
         <div id="dataTable" class='lg:mt-2'></div>
       </div>
       <div class="col-span-12 order-6 md:order-none md:col-span-8 lg:col-span-9 xl:col-span-10 px-2"

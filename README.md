@@ -9,3 +9,8 @@ A live version of the tool is available at http://xmrit.com/t/ . You can find mo
 1. We assume you have [Node.js](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs) environment installed
 2. If it is your first time, run `npm install`
 3. Otherwise simply run `npm run start` and open your browser at http://localhost:1234.
+
+## Color Customization
+You can customize the colors of various chart elements, such as lines, exceptions, and labels.
+Look for the 'Customize Chart Colors' section in the application. Changes made here are automatically saved in your browser's local storage and will be applied when you next open the application.
+You can also reset the colors to their default values using the 'Reset to Default Colors' button.
