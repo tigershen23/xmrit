@@ -41,26 +41,26 @@ enum DataStatus {
 function dataStatusColor(d: DataStatus): string {
   switch (d) {
     case DataStatus.RUN_OF_EIGHT_EXCEPTION:
-      return "blue";
+      return CHART_COLORS.dataPointRunOfEight;
     case DataStatus.FOUR_NEAR_LIMIT_EXCEPTION:
-      return "orange";
+      return CHART_COLORS.dataPointFourNearLimit;
     case DataStatus.NPL_EXCEPTION:
-      return "red";
+      return CHART_COLORS.dataPointOutsideLimit;
     default:
-      return "black";
+      return CHART_COLORS.dataPointNormal;
   }
 }
 
 function dataLabelsStatusColor(d: DataStatus): string {
   switch (d) {
     case DataStatus.RUN_OF_EIGHT_EXCEPTION:
-      return "blue";
+      return CHART_COLORS.dataLabelsRunOfEight;
     case DataStatus.FOUR_NEAR_LIMIT_EXCEPTION:
-      return "#be5504"; // ginger. contrast: 4.68
+      return CHART_COLORS.dataLabelsFourNearLimit; // ginger. contrast: 4.68
     case DataStatus.NPL_EXCEPTION:
-      return "#e3242b"; // rose. contrast 4.61
+      return CHART_COLORS.dataLabelsOutsideLimit; // rose. contrast 4.61
     default:
-      return "black";
+      return CHART_COLORS.dataPointNormal;
   }
 }
 
@@ -146,8 +146,25 @@ const INACTIVE_LOCKED_LIMITS = {
   avgMovement: 0,
   URL: -Infinity,
 } as LineValueType;
-const MEAN_SHAPE_COLOR = "red";
-const LIMIT_SHAPE_COLOR = "steelblue";
+// Default color configuration
+const DEFAULT_CHART_COLORS = {
+  meanLine: "red",
+  limitLine: "steelblue",
+  dataPointNormal: "black",
+  dataPointRunOfEight: "blue",
+  dataPointFourNearLimit: "orange",
+  dataPointOutsideLimit: "red",
+  dataLabelsRunOfEight: "blue",
+  dataLabelsFourNearLimit: "#be5504",
+  dataLabelsOutsideLimit: "#e3242b",
+  dividerLine: "purple",
+  quarterLine: "gray",
+  trendLine: "darkgreen",
+  backgroundColor: "rgba(255, 255, 255, 0.5)"
+};
+
+// Global chart colors - will be updated by user preferences
+let CHART_COLORS = { ...DEFAULT_CHART_COLORS };
 const INITIAL_VALUES = [
   5045, 4350, 4350, 3975, 4290, 4430, 4485, 4285, 3980, 3925, 3645, 3760, 3300,
   3685, 3463, 5200,
@@ -170,6 +187,9 @@ const state = {
   lockedLimitBaseData: [] as DataValue[], // data for the locked limit lines
   xLabel: "Date",
   yLabel: "Value",
+  
+  // Color configuration
+  chartColors: { ...DEFAULT_CHART_COLORS },
 
   // xdata, movements are bound to the charts.
   // So, all update must be done in place (e.g. use updateInPlace) to maintain reactiveness.
@@ -861,7 +881,7 @@ function renderDividerLine(dividerLine: DividerType, stats: _Stats) {
         style: {
           lineWidth: DIVIDER_LINE_WIDTH,
           lineDash: "solid",
-          stroke: "purple",
+          stroke: CHART_COLORS.dividerLine,
         },
         draggable: "horizontal",
         ondragend: (dragEvent) => {
@@ -968,7 +988,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-avgmovement`,
         lineStyle: {
-          color: MEAN_SHAPE_COLOR,
+          color: CHART_COLORS.meanLine,
           width: strokeWidth,
           type: lineType,
         },
@@ -978,7 +998,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-URL`,
         lineStyle: {
-          color: LIMIT_SHAPE_COLOR,
+          color: CHART_COLORS.limitLine,
           width: strokeWidth,
           type: lineType,
         },
@@ -1001,7 +1021,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-low-Q`,
         lineStyle: {
-          color: "gray",
+          color: CHART_COLORS.quarterLine,
           type: "dashed",
           dashOffset: 15,
           width: 1,
@@ -1012,7 +1032,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-upp-Q`,
         lineStyle: {
-          color: "gray",
+          color: CHART_COLORS.quarterLine,
           type: "dashed",
           dashOffset: 15,
           width: 1,
@@ -1022,7 +1042,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-avg`,
         lineStyle: {
-          color: MEAN_SHAPE_COLOR,
+          color: CHART_COLORS.meanLine,
           width: strokeWidth,
           type: lineType,
         },
@@ -1032,7 +1052,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-unpl`,
         lineStyle: {
-          color: LIMIT_SHAPE_COLOR,
+          color: CHART_COLORS.limitLine,
           width: strokeWidth,
           type: lineType,
         },
@@ -1042,7 +1062,7 @@ function renderLimitLines(stats: _Stats) {
       createHorizontalLimitLineSeries({
         name: `${i}-lnpl`,
         lineStyle: {
-          color: LIMIT_SHAPE_COLOR,
+          color: CHART_COLORS.limitLine,
           width: strokeWidth,
           type: lineType,
         },
@@ -1918,8 +1938,14 @@ document.addEventListener("DOMContentLoaded", async function (_e) {
   const trendDialogOpenButton = document.querySelector(
     "#trend-open-btn"
   ) as HTMLButtonElement;
+  const colorsButton = document.querySelector(
+    "#colors-btn"
+  ) as HTMLButtonElement;
 
   const pageParams = extractDataFromUrl();
+  
+  // Load saved color preferences
+  loadColorPreferences();
 
   let isDeseasonalised = false;
   let isShowingTrend = false;
@@ -2007,6 +2033,9 @@ document.addEventListener("DOMContentLoaded", async function (_e) {
   state.trendData = deepClone(state.tableData);
 
   renderCharts("init");
+  
+  // Initialize color inputs with current values
+  updateColorInputs();
 
   // Divider Buttons
   const addDividerButton = document.querySelector(
@@ -2023,6 +2052,7 @@ document.addEventListener("DOMContentLoaded", async function (_e) {
   initializeModal("lock-limit-dialog", "lock-limit-backdrop", "lock-limit-close");
   initializeModal("deseason-dialog", "deseason-backdrop", "deseason-close");
   initializeModal("trend-dialog", "trend-backdrop", "trend-close-btn");
+  initializeModal("colors-dialog", "colors-backdrop", "colors-close");
 
   // Seasonal Factors
   const seasonalFactorsDialog = document.querySelector(
@@ -2211,6 +2241,74 @@ document.addEventListener("DOMContentLoaded", async function (_e) {
 
     if (trendInterceptInput.value !== "") {
       state.regressionStats.c = parseFloat(trendInterceptInput.value);
+    }
+  });
+
+  // Colors Dialog
+  const colorsDialog = document.querySelector(
+    "#colors-dialog"
+  ) as HTMLDialogElement;
+  const colorsCloseButton = document.querySelector(
+    "#colors-close"
+  ) as HTMLButtonElement;
+  const colorsApplyButton = document.querySelector(
+    "#colors-apply"
+  ) as HTMLButtonElement;
+  const colorsResetButton = document.querySelector(
+    "#colors-reset"
+  ) as HTMLButtonElement;
+  const backgroundOpacitySlider = document.querySelector(
+    "#background-opacity"
+  ) as HTMLInputElement;
+
+  colorsButton?.addEventListener("click", () => {
+    updateColorInputs();
+    showModal("colors-dialog", "colors-backdrop");
+  });
+  
+  colorsCloseButton?.addEventListener("click", () => {
+    hideModal("colors-dialog", "colors-backdrop");
+  });
+  
+  colorsApplyButton?.addEventListener("click", () => {
+    hideModal("colors-dialog", "colors-backdrop");
+  });
+  
+  colorsResetButton?.addEventListener("click", () => {
+    if (confirm("Reset all colors to default values?")) {
+      resetChartColors();
+    }
+  });
+
+  // Color input event handlers
+  document.querySelectorAll('.color-input').forEach(input => {
+    input.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+      const colorKey = target.id.replace('color-', '');
+      if (colorKey === 'backgroundColor') {
+        const opacity = parseFloat(backgroundOpacitySlider.value) / 100;
+        const color = target.value;
+        // Convert hex to rgba
+        const r = parseInt(color.slice(1, 3), 16);
+        const g = parseInt(color.slice(3, 5), 16);
+        const b = parseInt(color.slice(5, 7), 16);
+        updateChartColors({ [colorKey]: `rgba(${r}, ${g}, ${b}, ${opacity})` });
+      } else {
+        updateChartColors({ [colorKey]: target.value });
+      }
+    });
+  });
+
+  backgroundOpacitySlider?.addEventListener('input', (e) => {
+    const target = e.target as HTMLInputElement;
+    const backgroundColorInput = document.querySelector('#color-backgroundColor') as HTMLInputElement;
+    if (backgroundColorInput) {
+      const opacity = parseFloat(target.value) / 100;
+      const color = backgroundColorInput.value;
+      const r = parseInt(color.slice(1, 3), 16);
+      const g = parseInt(color.slice(3, 5), 16);
+      const b = parseInt(color.slice(5, 7), 16);
+      updateChartColors({ backgroundColor: `rgba(${r}, ${g}, ${b}, ${opacity})` });
     }
   });
 
@@ -2783,8 +2881,12 @@ function doEChartsThings(stats: _Stats) {
  * @param shouldReplaceState: if set to true, the previous state of the charts will be discarded.
  */
 function initialiseECharts(shouldReplaceState: boolean = false) {
-  xplot.setOption({ ...chartBaseOptions }, shouldReplaceState);
-  mrplot.setOption({ ...chartBaseOptions }, shouldReplaceState);
+  const dynamicChartOptions = {
+    ...chartBaseOptions,
+    backgroundColor: CHART_COLORS.backgroundColor
+  };
+  xplot.setOption(dynamicChartOptions, shouldReplaceState);
+  mrplot.setOption(dynamicChartOptions, shouldReplaceState);
   xplot.setOption({
     title: {
       text:
@@ -2835,28 +2937,28 @@ function renderStats(stats: _Stats) {
     xSeries = xSeries.concat(
       createTrendValueSeries({
         id: "center",
-        color: MEAN_SHAPE_COLOR,
+        color: CHART_COLORS.meanLine,
         data: transformTrendLine(state.trendLines.centreLine),
       })
     );
     xSeries = xSeries.concat(
       createTrendValueSeries({
         id: "unpl",
-        color: LIMIT_SHAPE_COLOR,
+        color: CHART_COLORS.limitLine,
         data: transformTrendLine(state.trendLines.unpl),
       })
     );
     xSeries = xSeries.concat(
       createTrendValueSeries({
         id: "lnpl",
-        color: LIMIT_SHAPE_COLOR,
+        color: CHART_COLORS.limitLine,
         data: transformTrendLine(state.trendLines.lnpl),
       })
     );
     xSeries = xSeries.concat(
       createTrendValueSeries({
         id: "lowerQtl",
-        color: "grey",
+        color: CHART_COLORS.quarterLine,
         data: transformTrendLine(state.trendLines.lowerQtl),
         lineType: "dashed",
       })
@@ -2864,7 +2966,7 @@ function renderStats(stats: _Stats) {
     xSeries = xSeries.concat(
       createTrendValueSeries({
         id: "upperQtl",
-        color: "grey",
+        color: CHART_COLORS.quarterLine,
         data: transformTrendLine(state.trendLines.upperQtl),
         lineType: "dashed",
       })
@@ -3128,7 +3230,7 @@ const backgroundImage = new Image();
 backgroundImage.src = "../xmrit-bg.png";
 
 const chartBaseOptions = {
-  backgroundColor: "rgba(255, 255, 255, 0.5)",
+  backgroundColor: CHART_COLORS.backgroundColor,
   xAxis: {
     type: "time",
     axisLabel: {
@@ -3599,4 +3701,75 @@ function debug(v: any, msg?: string) {
   }
   console.debug(v);
   return v;
+}
+
+// Color management functions
+function updateChartColors(newColors: Partial<typeof DEFAULT_CHART_COLORS>) {
+  Object.assign(CHART_COLORS, newColors);
+  Object.assign(state.chartColors, newColors);
+  saveColorPreferences();
+  redraw("updateChartColors");
+}
+
+function resetChartColors() {
+  Object.assign(CHART_COLORS, DEFAULT_CHART_COLORS);
+  Object.assign(state.chartColors, DEFAULT_CHART_COLORS);
+  saveColorPreferences();
+  updateColorInputs();
+  redraw("resetChartColors");
+}
+
+function saveColorPreferences() {
+  try {
+    localStorage.setItem('xmrit-chart-colors', JSON.stringify(state.chartColors));
+  } catch (e) {
+    console.warn('Could not save color preferences:', e);
+  }
+}
+
+function loadColorPreferences() {
+  try {
+    const saved = localStorage.getItem('xmrit-chart-colors');
+    if (saved) {
+      const savedColors = JSON.parse(saved);
+      Object.assign(CHART_COLORS, savedColors);
+      Object.assign(state.chartColors, savedColors);
+    }
+  } catch (e) {
+    console.warn('Could not load color preferences:', e);
+  }
+}
+
+function updateColorInputs() {
+  Object.keys(CHART_COLORS).forEach(colorKey => {
+    const input = document.querySelector(`#color-${colorKey}`) as HTMLInputElement;
+    if (input) {
+      if (colorKey === 'backgroundColor') {
+        // Handle rgba background color
+        const color = CHART_COLORS[colorKey];
+        if (color.startsWith('rgba(')) {
+          // Extract rgb values and opacity
+          const matches = color.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([0-9.]+)\)/);
+          if (matches) {
+            const [, r, g, b, a] = matches;
+            // Convert to hex
+            const hex = '#' + [r, g, b].map(x => {
+              const hex = parseInt(x, 10).toString(16);
+              return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+            input.value = hex;
+            // Update opacity slider
+            const opacitySlider = document.querySelector('#background-opacity') as HTMLInputElement;
+            if (opacitySlider) {
+              opacitySlider.value = (parseFloat(a) * 100).toString();
+            }
+          }
+        } else {
+          input.value = color;
+        }
+      } else {
+        input.value = CHART_COLORS[colorKey];
+      }
+    }
+  });
 }
