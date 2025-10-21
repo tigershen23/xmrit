@@ -711,6 +711,14 @@ function linearRegression(yValues: DataValue[]): { m: number; c: number } | null
   let validXData = removeAllNulls(state.xdata)
   let firstData = fromDateStr(validXData[0].x)
   let base = fromDateStr(validXData[1].x) - firstData;
+  
+  if (base === 0) {
+    console.error(
+      "Cannot perform linear regression: first two data points have the same date. Please ensure your data has distinct dates."
+    );
+    return null;
+  }
+  
   let normalizedValue: { x: number, y: number }[] = yValues.map(d => {
     return {
       x: (fromDateStr(d.x) - firstData) / base,
