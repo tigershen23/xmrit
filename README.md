@@ -6,6 +6,22 @@ A live version of the tool is available at http://xmrit.com/t/ . You can find mo
 
 ## Getting Started
 
-1. We assume you have [Node.js](https://nodejs.org/en/learn/getting-started/how-to-install-nodejs) environment installed
-2. If it is your first time, run `npm install`
-3. Otherwise simply run `npm run start` and open your browser at http://localhost:1234.
+1. We assume you have [Bun](https://bun.sh/) installed (v1.3.0 or higher)
+   - Install Bun: `curl -fsSL https://bun.sh/install | bash`
+   - Or via npm: `npm install -g bun`
+2. If it is your first time, run `bun install`
+3. Otherwise simply run `bun run start` and open your browser at http://localhost:1234.
+
+## Available Scripts
+
+- `bun install` - Install dependencies
+- `bun run start` - Start development server with hot reload
+- `bun run build` - Build for production
+
+## Why Bun?
+
+This project uses [Bun](https://bun.sh/) as the package manager and runtime for:
+- ⚡ Fast dependency installation
+- 🚀 Quick script execution
+- 🔄 Drop-in replacement for Node.js and npm
+- 📦 Efficient package management
